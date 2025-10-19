@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SchleimShop - Dein Online-Shop für hochwertigen, bunten Schleim und Slime-Zubehör">
+    <title>SchleimShop - Premium Slime & Schleim Online kaufen</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-brand">
+                    <i class="fas fa-flask"></i>
+                    <span class="brand-name">SchleimShop</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#products" class="nav-link">Produkte</a></li>
+                    <li><a href="#about" class="nav-link">Über uns</a></li>
+                    <li><a href="#contact" class="nav-link">Kontakt</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <button class="cart-btn" id="cartBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Willkommen im SchleimShop</h1>
+            <p class="hero-subtitle">Entdecke die faszinierendste Welt des Schleims</p>
+            <p class="hero-description">Premium Slime in allen Farben, Texturen und Düften - handgemacht mit Liebe</p>
+            <a href="#products" class="btn btn-primary">Jetzt einkaufen</a>
+        </div>
+        <div class="hero-decoration">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="blob blob-3"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="feature-card">
+                <i class="fas fa-shipping-fast feature-icon"></i>
+                <h3>Schneller Versand</h3>
+                <p>Versand innerhalb von 24 Stunden</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <h3>100% Sicher</h3>
+                <p>Ungiftig und dermatologisch getestet</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-heart feature-icon"></i>
+                <h3>Handgemacht</h3>
+                <p>Mit Liebe zum Detail hergestellt</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-star feature-icon"></i>
+                <h3>Premium Qualität</h3>
+                <p>Nur beste Zutaten verwenden</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">Unsere Produkte</h2>
+            <p class="section-subtitle">Wähle aus unserer vielfältigen Kollektion</p>
+            
+            <div class="product-filters">
+                <button class="filter-btn active" data-filter="all">Alle</button>
+                <button class="filter-btn" data-filter="glitter">Glitzer</button>
+                <button class="filter-btn" data-filter="fluffy">Fluffy</button>
+                <button class="filter-btn" data-filter="clear">Clear</button>
+                <button class="filter-btn" data-filter="butter">Butter</button>
+            </div>
+
+            <div class="products-grid" id="productsGrid">
+                <!-- Products will be dynamically loaded -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">Über SchleimShop</h2>
+                    <p>Seit 2024 sind wir deine erste Adresse für hochwertigen, handgemachten Schleim. Unsere Leidenschaft ist es, den perfekten Slime zu kreieren - von glitzernd über flauschig bis hin zu kristallklar.</p>
+                    <p>Jeder unserer Schleime wird mit größter Sorgfalt und nur aus den besten, ungiftigen Materialien hergestellt. Wir legen großen Wert auf Qualität, Sicherheit und natürlich jede Menge Spaß!</p>
+                    <div class="about-stats">
+                        <div class="stat">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">Glückliche Kunden</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Verschiedene Sorten</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Zufriedenheit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-flask-vial"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Kontaktiere uns</h2>
+            <p class="section-subtitle">Wir freuen uns auf deine Nachricht</p>
+            
+            <div class="contact-content">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <input type="text" class="form-input" placeholder="Dein Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" class="form-input" placeholder="Deine E-Mail" required>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-input" rows="5" placeholder="Deine Nachricht" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Nachricht senden</button>
+                </form>
+                
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>E-Mail</h4>
+                            <p>info@schleimshop.de</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Telefon</h4>
+                            <p>+49 123 456789</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Adresse</h4>
+                            <p>Schleim Straße 123<br>12345 Berlin, Deutschland</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-flask"></i>
+                    <span class="brand-name">SchleimShop</span>
+                    <p>Premium Slime seit 2024</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#products">Produkte</a></li>
+                        <li><a href="#about">Über uns</a></li>
+                        <li><a href="#contact">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <h4>Folge uns</h4>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 SchleimShop. Alle Rechte vorbehalten.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Modal -->
+    <div class="cart-modal" id="cartModal">
+        <div class="cart-modal-content">
+            <div class="cart-header">
+                <h2>Warenkorb</h2>
+                <button class="close-cart" id="closeCart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cart-items" id="cartItems">
+                <!-- Cart items will be dynamically loaded -->
+            </div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Gesamt:</span>
+                    <span id="cartTotal">0,00 €</span>
+                </div>
+                <button class="btn btn-primary btn-block" id="checkoutBtn">Zur Kasse</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
