@@ -446,3 +446,280 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===========================================
+// Music Playground with Tone.js
+// ===========================================
+
+let isPlaying = false;
+let currentPattern = 'pattern1';
+let drumEnabled = true;
+let bassEnabled = true;
+let synthEnabled = true;
+
+// Define patterns
+const patterns = {
+    pattern1: {
+        drum: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+        bass: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        synth: [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0]
+    },
+    pattern2: {
+        drum: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        bass: [1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        synth: [0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0]
+    },
+    pattern3: {
+        drum: [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
+        bass: [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
+        synth: [1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0]
+    }
+};
+
+// Synths and instruments
+let drumSynth, bassSynth, melodySynth, drumPart, bassPart, synthPart;
+
+// Initialize Tone.js instruments
+function initToneInstruments() {
+    // Drum synth (kick drum sound)
+    drumSynth = new Tone.MembraneSynth({
+        pitchDecay: 0.05,
+        octaves: 4,
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 }
+    }).toDestination();
+    
+    // Bass synth
+    bassSynth = new Tone.MonoSynth({
+        oscillator: { type: 'sawtooth' },
+        envelope: { attack: 0.01, decay: 0.3, sustain: 0.2, release: 0.5 },
+        filter: { Q: 3, type: 'lowpass', rolloff: -24 },
+        filterEnvelope: { attack: 0.001, decay: 0.1, sustain: 0.5, release: 2, baseFrequency: 200, octaves: 2.6 }
+    }).toDestination();
+    
+    // Melody synth
+    melodySynth = new Tone.PolySynth(Tone.Synth, {
+        oscillator: { type: 'square' },
+        envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+    }).toDestination();
+}
+
+// Create sequencers
+function createSequencers() {
+    const pattern = patterns[currentPattern];
+    
+    // Drum sequencer
+    drumPart = new Tone.Sequence((time, step) => {
+        if (pattern.drum[step] && drumEnabled) {
+            drumSynth.triggerAttackRelease('C2', '8n', time);
+        }
+        highlightStep('drum', step);
+    }, [...Array(16).keys()], '16n');
+    
+    // Bass sequencer
+    const bassNotes = ['C2', 'C2', 'G1', 'G1', 'A1', 'A1', 'F1', 'F1', 'C2', 'C2', 'G1', 'G1', 'A1', 'A1', 'F1', 'F1'];
+    bassPart = new Tone.Sequence((time, step) => {
+        if (pattern.bass[step] && bassEnabled) {
+            bassSynth.triggerAttackRelease(bassNotes[step], '8n', time);
+        }
+        highlightStep('bass', step);
+    }, [...Array(16).keys()], '16n');
+    
+    // Synth sequencer
+    const synthNotes = ['C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4'];
+    synthPart = new Tone.Sequence((time, step) => {
+        if (pattern.synth[step] && synthEnabled) {
+            melodySynth.triggerAttackRelease(synthNotes[step], '8n', time);
+        }
+        highlightStep('synth', step);
+    }, [...Array(16).keys()], '16n');
+}
+
+// Highlight current step in visualizer
+function highlightStep(track, step) {
+    Tone.Draw.schedule(() => {
+        // Remove previous highlighting
+        document.querySelectorAll(`.pattern-step[data-track="${track}"]`).forEach(el => {
+            el.classList.remove('playing');
+        });
+        
+        // Add current step highlighting
+        const stepElement = document.querySelector(`.pattern-step[data-track="${track}"][data-step="${step}"]`);
+        if (stepElement) {
+            stepElement.classList.add('playing');
+            setTimeout(() => stepElement.classList.remove('playing'), 100);
+        }
+    }, 0);
+}
+
+// Generate pattern grid
+function generatePatternGrid() {
+    const patternGrid = document.getElementById('patternGrid');
+    if (!patternGrid) return;
+    
+    patternGrid.innerHTML = '';
+    
+    const pattern = patterns[currentPattern];
+    const tracks = ['drum', 'bass', 'synth'];
+    const trackLabels = { drum: '🥁 Drums', bass: '🎸 Bass', synth: '🎹 Synth' };
+    
+    tracks.forEach(track => {
+        // Add track label
+        const label = document.createElement('div');
+        label.className = 'pattern-label';
+        label.textContent = trackLabels[track];
+        patternGrid.appendChild(label);
+        
+        // Add steps
+        for (let i = 0; i < 16; i++) {
+            const step = document.createElement('div');
+            step.className = 'pattern-step';
+            step.dataset.track = track;
+            step.dataset.step = i;
+            
+            if (pattern[track][i]) {
+                step.classList.add('active');
+            }
+            
+            // Allow toggling steps
+            step.addEventListener('click', () => {
+                pattern[track][i] = pattern[track][i] ? 0 : 1;
+                step.classList.toggle('active');
+            });
+            
+            patternGrid.appendChild(step);
+        }
+    });
+}
+
+// Play button
+const playBtn = document.getElementById('playBtn');
+if (playBtn) {
+    playBtn.addEventListener('click', async () => {
+        if (!isPlaying) {
+            await Tone.start();
+            
+            // Initialize instruments if not already done
+            if (!drumSynth) {
+                initToneInstruments();
+                createSequencers();
+            }
+            
+            // Start all parts
+            Tone.Transport.start();
+            drumPart.start(0);
+            bassPart.start(0);
+            synthPart.start(0);
+            
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        } else {
+            // Pause
+            Tone.Transport.pause();
+            isPlaying = false;
+            playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+        }
+    });
+}
+
+// Stop button
+const stopBtn = document.getElementById('stopBtn');
+if (stopBtn) {
+    stopBtn.addEventListener('click', () => {
+        Tone.Transport.stop();
+        if (drumPart) drumPart.stop(0);
+        if (bassPart) bassPart.stop(0);
+        if (synthPart) synthPart.stop(0);
+        
+        isPlaying = false;
+        playBtn.innerHTML = '<i class="fas fa-play"></i> Play';
+        
+        // Clear highlighting
+        document.querySelectorAll('.pattern-step').forEach(el => {
+            el.classList.remove('playing');
+        });
+    });
+}
+
+// Tempo slider
+const tempoSlider = document.getElementById('tempoSlider');
+const tempoValue = document.getElementById('tempoValue');
+if (tempoSlider && tempoValue) {
+    tempoSlider.addEventListener('input', (e) => {
+        const bpm = e.target.value;
+        tempoValue.textContent = bpm;
+        Tone.Transport.bpm.value = bpm;
+    });
+}
+
+// Pattern selection
+const patternBtns = document.querySelectorAll('.pattern-btn');
+patternBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Stop current playback
+        const wasPlaying = isPlaying;
+        if (isPlaying) {
+            Tone.Transport.stop();
+            if (drumPart) drumPart.stop(0);
+            if (bassPart) bassPart.stop(0);
+            if (synthPart) synthPart.stop(0);
+            isPlaying = false;
+        }
+        
+        // Update active button
+        patternBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Change pattern
+        currentPattern = btn.dataset.pattern;
+        
+        // Dispose old parts
+        if (drumPart) drumPart.dispose();
+        if (bassPart) bassPart.dispose();
+        if (synthPart) synthPart.dispose();
+        
+        // Create new sequencers
+        createSequencers();
+        
+        // Update grid
+        generatePatternGrid();
+        
+        // Resume if was playing
+        if (wasPlaying) {
+            Tone.Transport.start();
+            drumPart.start(0);
+            bassPart.start(0);
+            synthPart.start(0);
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        }
+    });
+});
+
+// Instrument toggles
+const toggleDrum = document.getElementById('toggleDrum');
+const toggleBass = document.getElementById('toggleBass');
+const toggleSynth = document.getElementById('toggleSynth');
+
+if (toggleDrum) {
+    toggleDrum.addEventListener('change', (e) => {
+        drumEnabled = e.target.checked;
+    });
+}
+
+if (toggleBass) {
+    toggleBass.addEventListener('change', (e) => {
+        bassEnabled = e.target.checked;
+    });
+}
+
+if (toggleSynth) {
+    toggleSynth.addEventListener('change', (e) => {
+        synthEnabled = e.target.checked;
+    });
+}
+
+// Initialize pattern grid on load
+if (document.getElementById('patternGrid')) {
+    generatePatternGrid();
+}
