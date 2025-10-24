@@ -10,6 +10,7 @@ Welcome to SchleimShop - your premium online shop for high-quality slime product
 - **Smooth Animations**: Engaging user experience with modern CSS animations
 - **Local Storage**: Cart persists between sessions
 - **Mobile-Friendly**: Fully responsive navigation and layout
+- **Music Playground**: Live coding music with Tone.js - Pattern-based sequencer with drums, bass, and synth
 
 ## 🛍️ Product Categories
 
@@ -29,6 +30,7 @@ Visit the live site at: [https://bbodensieck.github.io/SchleimShop/](https://bbo
 - Vanilla JavaScript
 - Font Awesome Icons
 - LocalStorage API
+- Tone.js (Web Audio Framework for pattern-based music)
 
 ## 📦 Setup
 
@@ -46,6 +48,7 @@ This is a static website that runs directly in the browser. No build process req
 - Interactive product cards
 - Slide-in shopping cart
 - Real-time cart updates
+- Pattern-based music sequencer with visual feedback
 
 ## 📱 Responsive Design
 
