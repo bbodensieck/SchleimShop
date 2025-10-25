@@ -136,6 +136,16 @@
             <h2 class="section-title">Music Playground</h2>
             <p class="section-subtitle">Live Coding Music mit Tone.js - Experimentiere mit Pattern-basierter Musik</p>
             
+            <!-- Mode Switcher -->
+            <div class="mode-switcher">
+                <button class="mode-btn active" data-mode="editor">
+                    <i class="fas fa-code"></i> Code Editor
+                </button>
+                <button class="mode-btn" data-mode="visual">
+                    <i class="fas fa-th"></i> Visual Grid
+                </button>
+            </div>
+
             <div class="playground-content">
                 <div class="playground-controls">
                     <div class="control-group">
@@ -159,34 +169,100 @@
                     </div>
                     
                     <div class="control-group">
-                        <h3>Pattern Auswahl</h3>
+                        <h3>Beispiel Patterns</h3>
                         <div class="button-group">
-                            <button class="pattern-btn active" data-pattern="pattern1">Pattern 1</button>
-                            <button class="pattern-btn" data-pattern="pattern2">Pattern 2</button>
-                            <button class="pattern-btn" data-pattern="pattern3">Pattern 3</button>
+                            <button class="example-btn" data-example="basic">Basic Beat</button>
+                            <button class="example-btn" data-example="techno">Techno</button>
+                            <button class="example-btn" data-example="ambient">Ambient</button>
                         </div>
                     </div>
                     
                     <div class="control-group">
                         <h3>Instrumente</h3>
-                        <div class="instrument-toggles">
-                            <label class="toggle-label">
-                                <input type="checkbox" id="toggleDrum" checked>
-                                <span>Drums</span>
-                            </label>
-                            <label class="toggle-label">
-                                <input type="checkbox" id="toggleBass" checked>
-                                <span>Bass</span>
-                            </label>
-                            <label class="toggle-label">
-                                <input type="checkbox" id="toggleSynth" checked>
-                                <span>Synth</span>
-                            </label>
+                        <div class="instrument-info">
+                            <div class="instrument-card">
+                                <div class="instrument-header">
+                                    <span class="instrument-icon">🥁</span>
+                                    <span class="instrument-name">Drums</span>
+                                </div>
+                                <div class="instrument-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Type:</span>
+                                        <span class="detail-value">MembraneSynth</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Envelope:</span>
+                                        <span class="detail-value">0.001/0.4/0.01/1.4</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="instrument-card">
+                                <div class="instrument-header">
+                                    <span class="instrument-icon">🎸</span>
+                                    <span class="instrument-name">Bass</span>
+                                </div>
+                                <div class="instrument-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Type:</span>
+                                        <span class="detail-value">MonoSynth</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Waveform:</span>
+                                        <span class="detail-value">Sawtooth</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="instrument-card">
+                                <div class="instrument-header">
+                                    <span class="instrument-icon">🎹</span>
+                                    <span class="instrument-name">Synth</span>
+                                </div>
+                                <div class="instrument-details">
+                                    <div class="detail-row">
+                                        <span class="detail-label">Type:</span>
+                                        <span class="detail-value">PolySynth</span>
+                                    </div>
+                                    <div class="detail-row">
+                                        <span class="detail-label">Waveform:</span>
+                                        <span class="detail-value">Square</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="visualizer">
+                <!-- Code Editor View -->
+                <div class="editor-container" id="editorView">
+                    <div class="editor-header">
+                        <h3><i class="fas fa-code"></i> Live Code Editor</h3>
+                        <div class="editor-actions">
+                            <button class="editor-btn" id="runCode" title="Run Code (Ctrl+Enter)">
+                                <i class="fas fa-play"></i> Run
+                            </button>
+                            <button class="editor-btn" id="clearCode" title="Clear Editor">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div class="editor-wrapper">
+                        <textarea id="codeEditor" class="code-editor" spellcheck="false"></textarea>
+                        <pre id="editorHighlight" class="editor-highlight"></pre>
+                    </div>
+                    <div class="editor-footer">
+                        <div class="editor-help">
+                            <strong>Syntax:</strong> 
+                            <code>pattern(track, notes, duration)</code> 
+                            <span class="help-separator">|</span>
+                            Tracks: <code>drum</code>, <code>bass</code>, <code>synth</code>
+                            <span class="help-separator">|</span>
+                            <span class="shortcut-hint">Press <kbd>Ctrl+Enter</kbd> to run</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Grid View -->
+                <div class="visualizer" id="visualView" style="display: none;">
                     <div class="visualizer-title">Pattern Visualizer</div>
                     <div class="pattern-grid" id="patternGrid">
                         <!-- Pattern grid will be generated by JavaScript -->
