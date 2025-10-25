@@ -759,7 +759,13 @@ pattern('synth', 'C4 E4 G4 B4', '0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0');`,
     ambient: `// Ambient Pattern
 pattern('drum', 'C2', '1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0');
 pattern('bass', 'C2 A1 F1', '1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0');
-pattern('synth', 'C4 E4 G4 C5 E5', '1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0');`
+pattern('synth', 'C4 E4 G4 C5 E5', '1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0');`,
+    
+    slime: `// Gibbery Slime Theme 🧪
+// Bubbly, squishy, and fun!
+pattern('drum', 'C2', '1 0 1 0 0 1 0 0 1 0 0 1 0 1 0 0');
+pattern('bass', 'G1 A1 F1 G1 E1', '1 0 0 1 0 1 0 0 0 1 0 0 1 0 1 0');
+pattern('synth', 'E5 G5 C5 E5 D5 G5 C5', '1 1 0 1 0 0 1 1 0 1 0 1 0 0 1 0');`
 };
 
 // Set default example
