@@ -867,11 +867,9 @@ function runCode() {
                 }
                 
                 // Pad rhythm to 16 steps
-                while (rhythm.length < 16) {
-                    rhythm.push(0);
-                }
+                const paddedRhythm = rhythm.concat(new Array(16 - rhythm.length).fill(0));
                 
-                patterns.custom[track] = rhythm;
+                patterns.custom[track] = paddedRhythm;
                 
                 // Store notes for bass and synth
                 if (track === 'bass') {
@@ -884,20 +882,19 @@ function runCode() {
             }
         });
         
-        // Update note arrays if provided
-        if (customBassNotes.length > 0) {
-            bassNotes = [];
+        // Helper function to expand notes to 16 steps
+        const expandNotes = (notes, defaultNotes) => {
+            if (notes.length === 0) return defaultNotes;
+            const result = [];
             for (let i = 0; i < 16; i++) {
-                bassNotes.push(customBassNotes[i % customBassNotes.length]);
+                result.push(notes[i % notes.length]);
             }
-        }
+            return result;
+        };
         
-        if (customSynthNotes.length > 0) {
-            synthNotes = [];
-            for (let i = 0; i < 16; i++) {
-                synthNotes.push(customSynthNotes[i % customSynthNotes.length]);
-            }
-        }
+        // Update note arrays if provided
+        bassNotes = expandNotes(customBassNotes, bassNotes);
+        synthNotes = expandNotes(customSynthNotes, synthNotes);
         
         // Switch to custom pattern
         currentPattern = 'custom';
