@@ -776,6 +776,7 @@ body {
     padding: 2rem;
     border-radius: 15px;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow-x: auto;
 }
 
 .visualizer-title {
@@ -790,6 +791,7 @@ body {
     grid-template-columns: auto repeat(16, 1fr);
     gap: 4px;
     font-size: 0.9rem;
+    min-width: min-content;
 }
 
 .pattern-label {
@@ -1193,6 +1195,15 @@ body {
         grid-template-columns: 1fr;
     }
 
+    .pattern-step {
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    .pattern-label {
+        min-width: 80px;
+    }
+
     .about-stats {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -1221,5 +1232,13 @@ body {
 
     .features .container {
         grid-template-columns: 1fr;
+    }
+
+    .visualizer {
+        padding: 1rem;
+    }
+
+    .control-group {
+        padding: 1rem;
     }
 }
