@@ -473,8 +473,17 @@ const patterns = {
         drum: [1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0],
         bass: [1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0],
         synth: [1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0]
+    },
+    custom: {
+        drum: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+        bass: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+        synth: [1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0]
     }
 };
+
+// Note arrays for bass and synth (can be modified by live code)
+let bassNotes = ['C2', 'C2', 'G1', 'G1', 'A1', 'A1', 'F1', 'F1', 'C2', 'C2', 'G1', 'G1', 'A1', 'A1', 'F1', 'F1'];
+let synthNotes = ['C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4'];
 
 // Synths and instruments
 let drumSynth, bassSynth, melodySynth, drumPart, bassPart, synthPart;
@@ -517,7 +526,6 @@ function createSequencers() {
     }, [...Array(16).keys()], '16n');
     
     // Bass sequencer
-    const bassNotes = ['C2', 'C2', 'G1', 'G1', 'A1', 'A1', 'F1', 'F1', 'C2', 'C2', 'G1', 'G1', 'A1', 'A1', 'F1', 'F1'];
     bassPart = new Tone.Sequence((time, step) => {
         if (pattern.bass[step] && bassEnabled) {
             bassSynth.triggerAttackRelease(bassNotes[step], '8n', time);
@@ -526,7 +534,6 @@ function createSequencers() {
     }, [...Array(16).keys()], '16n');
     
     // Synth sequencer
-    const synthNotes = ['C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4', 'C4', 'E4', 'G4', 'E4'];
     synthPart = new Tone.Sequence((time, step) => {
         if (pattern.synth[step] && synthEnabled) {
             melodySynth.triggerAttackRelease(synthNotes[step], '8n', time);
@@ -723,3 +730,266 @@ if (toggleSynth) {
 if (document.getElementById('patternGrid')) {
     generatePatternGrid();
 }
+
+// ===========================================
+// Live Code Editor
+// ===========================================
+
+const codeEditor = document.getElementById('codeEditor');
+const editorHighlight = document.getElementById('editorHighlight');
+const runCodeBtn = document.getElementById('runCode');
+const clearCodeBtn = document.getElementById('clearCode');
+const modeBtns = document.querySelectorAll('.mode-btn');
+const editorView = document.getElementById('editorView');
+const visualView = document.getElementById('visualView');
+
+// Example patterns
+const examplePatterns = {
+    basic: `// Basic Beat Pattern
+// Syntax: pattern(track, notes, duration)
+pattern('drum', 'C2', '1 0 0 0 1 0 0 0 1 0 0 0 1 0 0 0');
+pattern('bass', 'C2 C2 G1 G1', '1 0 0 0 0 0 1 0 0 0 1 0 0 0 0 0');
+pattern('synth', 'C4 E4 G4 E4', '1 0 1 0 0 0 1 0 1 0 0 0 1 0 1 0');`,
+    
+    techno: `// Techno Pattern
+pattern('drum', 'C2', '1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0');
+pattern('bass', 'C2 C2 D2 C2 C2 D2', '1 0 0 1 0 0 1 0 1 0 0 1 0 0 1 0');
+pattern('synth', 'C4 E4 G4 B4', '0 0 1 0 0 0 1 0 0 0 1 0 0 0 1 0');`,
+    
+    ambient: `// Ambient Pattern
+pattern('drum', 'C2', '1 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0');
+pattern('bass', 'C2 A1 F1', '1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0');
+pattern('synth', 'C4 E4 G4 C5 E5', '1 0 1 1 0 1 0 0 1 0 1 1 0 1 0 0');`
+};
+
+// Set default example
+if (codeEditor) {
+    codeEditor.value = examplePatterns.basic;
+    highlightCode();
+}
+
+// Syntax highlighting
+function highlightCode() {
+    if (!codeEditor || !editorHighlight) return;
+    
+    const code = codeEditor.value;
+    
+    // First, escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
+    let highlighted = escapeHtml(code);
+    
+    // Highlight comments
+    highlighted = highlighted.replace(/(\/\/.*)/g, '<span style="color: #6A9955;">$1</span>');
+    
+    // Highlight function names
+    highlighted = highlighted.replace(/\b(pattern)\b/g, '<span style="color: #DCDCAA;">$1</span>');
+    
+    // Highlight strings
+    highlighted = highlighted.replace(/('[^']*'|"[^"]*")/g, '<span style="color: #CE9178;">$1</span>');
+    
+    // Highlight numbers
+    highlighted = highlighted.replace(/\b(\d+)\b/g, '<span style="color: #B5CEA8;">$1</span>');
+    
+    // Highlight track names (drum, bass, synth)
+    highlighted = highlighted.replace(/\b(drum|bass|synth)\b/g, '<span style="color: #4EC9B0;">$1</span>');
+    
+    // Highlight note names (C2, E4, etc.)
+    highlighted = highlighted.replace(/\b([A-G][#b]?[0-9])\b/g, '<span style="color: #9CDCFE;">$1</span>');
+    
+    editorHighlight.innerHTML = highlighted;
+}
+
+// Editor input handler
+if (codeEditor) {
+    codeEditor.addEventListener('input', highlightCode);
+    codeEditor.addEventListener('scroll', () => {
+        if (editorHighlight) {
+            editorHighlight.scrollTop = codeEditor.scrollTop;
+            editorHighlight.scrollLeft = codeEditor.scrollLeft;
+        }
+    });
+    
+    // Handle tab key
+    codeEditor.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const start = codeEditor.selectionStart;
+            const end = codeEditor.selectionEnd;
+            codeEditor.value = codeEditor.value.substring(0, start) + '    ' + codeEditor.value.substring(end);
+            codeEditor.selectionStart = codeEditor.selectionEnd = start + 4;
+            highlightCode();
+        }
+        
+        // Ctrl+Enter to run code
+        if (e.ctrlKey && e.key === 'Enter') {
+            e.preventDefault();
+            runCode();
+        }
+    });
+}
+
+// Parse and execute code
+function runCode() {
+    if (!codeEditor) return;
+    
+    const code = codeEditor.value;
+    const lines = code.split('\n');
+    
+    // Reset patterns
+    patterns.custom = {
+        drum: new Array(16).fill(0),
+        bass: new Array(16).fill(0),
+        synth: new Array(16).fill(0)
+    };
+    
+    // Custom notes arrays
+    let customBassNotes = [];
+    let customSynthNotes = [];
+    
+    try {
+        lines.forEach((line, lineNum) => {
+            line = line.trim();
+            
+            // Skip comments and empty lines
+            if (line.startsWith('//') || line === '') return;
+            
+            // Parse pattern() function
+            const patternMatch = line.match(/pattern\s*\(\s*['"](\w+)['"]\s*,\s*['"]([^'"]+)['"]\s*,\s*['"]([^'"]+)['"]\s*\)/);
+            
+            if (patternMatch) {
+                const track = patternMatch[1];
+                const notes = patternMatch[2].trim().split(/\s+/);
+                const rhythm = patternMatch[3].trim().split(/\s+/).map(x => parseInt(x));
+                
+                if (!['drum', 'bass', 'synth'].includes(track)) {
+                    throw new Error(`Line ${lineNum + 1}: Invalid track "${track}". Use drum, bass, or synth.`);
+                }
+                
+                if (rhythm.length > 16) {
+                    throw new Error(`Line ${lineNum + 1}: Pattern too long (max 16 steps).`);
+                }
+                
+                // Pad rhythm to 16 steps
+                const paddedRhythm = rhythm.concat(new Array(16 - rhythm.length).fill(0));
+                
+                patterns.custom[track] = paddedRhythm;
+                
+                // Store notes for bass and synth
+                if (track === 'bass') {
+                    customBassNotes = notes;
+                } else if (track === 'synth') {
+                    customSynthNotes = notes;
+                }
+            } else if (line.length > 0) {
+                throw new Error(`Line ${lineNum + 1}: Invalid syntax. Use pattern('track', 'notes', 'rhythm').`);
+            }
+        });
+        
+        // Helper function to expand notes to 16 steps
+        const expandNotes = (notes, defaultNotes) => {
+            if (notes.length === 0) return defaultNotes;
+            const result = [];
+            for (let i = 0; i < 16; i++) {
+                result.push(notes[i % notes.length]);
+            }
+            return result;
+        };
+        
+        // Update note arrays if provided
+        bassNotes = expandNotes(customBassNotes, bassNotes);
+        synthNotes = expandNotes(customSynthNotes, synthNotes);
+        
+        // Switch to custom pattern
+        currentPattern = 'custom';
+        
+        // Stop current playback
+        const wasPlaying = isPlaying;
+        if (isPlaying) {
+            Tone.Transport.stop();
+            if (drumPart) drumPart.stop(0);
+            if (bassPart) bassPart.stop(0);
+            if (synthPart) synthPart.stop(0);
+            isPlaying = false;
+        }
+        
+        // Dispose old parts
+        if (drumPart) drumPart.dispose();
+        if (bassPart) bassPart.dispose();
+        if (synthPart) synthPart.dispose();
+        
+        // Create new sequencers
+        createSequencers();
+        
+        // Update visual grid
+        generatePatternGrid();
+        
+        // Resume if was playing
+        if (wasPlaying) {
+            Tone.Transport.start();
+            drumPart.start(0);
+            bassPart.start(0);
+            synthPart.start(0);
+            isPlaying = true;
+            playBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        }
+        
+        showNotification('✅ Code executed successfully!');
+        
+    } catch (error) {
+        showNotification('❌ Error: ' + error.message);
+        console.error('Code execution error:', error);
+    }
+}
+
+// Run code button
+if (runCodeBtn) {
+    runCodeBtn.addEventListener('click', runCode);
+}
+
+// Clear code button
+if (clearCodeBtn) {
+    clearCodeBtn.addEventListener('click', () => {
+        if (codeEditor) {
+            codeEditor.value = '';
+            highlightCode();
+        }
+    });
+}
+
+// Example buttons
+const exampleBtns = document.querySelectorAll('.example-btn');
+exampleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const example = btn.dataset.example;
+        if (codeEditor && examplePatterns[example]) {
+            codeEditor.value = examplePatterns[example];
+            highlightCode();
+        }
+    });
+});
+
+// Mode switcher
+modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        
+        // Update active button
+        modeBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Toggle views
+        if (mode === 'editor') {
+            editorView.style.display = 'flex';
+            visualView.style.display = 'none';
+        } else {
+            editorView.style.display = 'none';
+            visualView.style.display = 'block';
+        }
+    });
+});
+
