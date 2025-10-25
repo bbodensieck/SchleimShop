@@ -773,7 +773,15 @@ function highlightCode() {
     if (!codeEditor || !editorHighlight) return;
     
     const code = codeEditor.value;
-    let highlighted = code;
+    
+    // First, escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
+    let highlighted = escapeHtml(code);
     
     // Highlight comments
     highlighted = highlighted.replace(/(\/\/.*)/g, '<span style="color: #6A9955;">$1</span>');
